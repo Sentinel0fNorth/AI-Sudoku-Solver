@@ -31,8 +31,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // TODO: Replace with your deployed Cloud Run URL
-            buildConfigField("String", "BACKEND_URL", "\"https://sudokusolver-XXXXX-uc.a.run.app/\"")
+            // Production Cloud Run URL
+            buildConfigField("String", "BACKEND_URL", "\"https://sudokusolver-647531837418.asia-south1.run.app/\"")
         }
     }
 

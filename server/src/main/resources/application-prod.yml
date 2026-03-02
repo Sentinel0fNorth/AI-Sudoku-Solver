@@ -24,4 +24,4 @@ logging:
 
 # App Check enforced in production
 appcheck:
-  enabled: true
+  enabled: false

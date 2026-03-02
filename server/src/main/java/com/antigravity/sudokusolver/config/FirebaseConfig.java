@@ -52,6 +52,7 @@ public class FirebaseConfig {
                 log.info("Initializing Firebase with Application Default Credentials");
                 options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.getApplicationDefault())
+                        .setProjectId("ai-sudoku-1850a")
                         .build();
             }
 

@@ -37,4 +37,20 @@ public class GlobalExceptionHandler {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleAllOtherExceptions(Exception ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Internal Server Error");
+        response.put("message", ex.getMessage());
+
+        // Temporarily send stack trace for debugging Cloud Run without gcloud access
+        StringBuilder stackTrace = new StringBuilder();
+        for (StackTraceElement element : ex.getStackTrace()) {
+            stackTrace.append(element.toString()).append("\n");
+        }
+        response.put("trace", stackTrace.toString());
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -33,6 +33,7 @@ android {
             )
             // Production Cloud Run URL
             buildConfigField("String", "BACKEND_URL", "\"https://sudokusolver-647531837418.asia-south1.run.app/\"")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -101,6 +102,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-appcheck-playintegrity")
-    debugImplementation("com.google.firebase:firebase-appcheck-debug")
+    implementation("com.google.firebase:firebase-appcheck-debug")
 
 }

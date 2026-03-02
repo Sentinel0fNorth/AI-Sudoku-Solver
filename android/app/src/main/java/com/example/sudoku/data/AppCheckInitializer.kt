@@ -22,16 +22,20 @@ object AppCheckInitializer {
     fun initialize(app: android.app.Application) {
         Firebase.initialize(app)
 
-        if (BuildConfig.DEBUG) {
-            // Debug provider: logs a token in Logcat to register in Firebase Console
-            Firebase.appCheck.installAppCheckProviderFactory(
-                com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory.getInstance()
-            )
-            Log.d("AppCheck", "Debug App Check provider installed")
-        } else {
-            Firebase.appCheck.installAppCheckProviderFactory(
-                PlayIntegrityAppCheckProviderFactory.getInstance()
-            )
-        }
+        // TEMPORARY: Force Debug provider for local release testing
+        // This bypasses the strict Play Store requirement for Play Integrity
+        Firebase.appCheck.installAppCheckProviderFactory(
+            com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory.getInstance()
+        )
+        Log.d("AppCheck", "Debug App Check provider explicitly forced")
+
+        // Force a token request to make sure the debug token is generated and logged
+        Firebase.appCheck.getAppCheckToken(false)
+            .addOnSuccessListener { tokenResult ->
+                Log.d("AppCheck", "Successfully fetched App Check token: ${tokenResult.token.take(10)}...")
+            }
+            .addOnFailureListener { e ->
+                Log.e("AppCheck", "Failed to fetch App Check token. Verify Google Play Services is available.", e)
+            }
     }
 }

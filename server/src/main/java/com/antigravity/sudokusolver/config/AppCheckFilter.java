@@ -1,8 +1,6 @@
 package com.antigravity.sudokusolver.config;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,13 +64,15 @@ public class AppCheckFilter extends OncePerRequestFilter {
         }
 
         try {
-            // Verify the App Check token as a Firebase ID token
-            FirebaseAuth auth = FirebaseAuth.getInstance(FirebaseApp.getInstance());
-            FirebaseToken decodedToken = auth.verifyIdToken(token);
+            // Verify the App Check token as a Firebase ID token (temporary test)
+            com.google.firebase.auth.FirebaseAuth auth = com.google.firebase.auth.FirebaseAuth
+                    .getInstance(FirebaseApp.getInstance());
+            com.google.firebase.auth.FirebaseToken decodedToken = auth.verifyIdToken(token);
             log.debug("App Check: verified token for subject {}", decodedToken.getUid());
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            log.warn("App Check: invalid token from {} — {}", request.getRemoteAddr(), e.getMessage());
+            log.warn("App Check: invalid token from {} — Exception: {} - Message: {}", request.getRemoteAddr(),
+                    e.getClass().getName(), e.getMessage());
             sendError(response, "Invalid App Check token.");
         }
     }

@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════
+#  AI Sudoku Solver — Root .gitignore
+# ═══════════════════════════════════════════════════════════════════
+
+# ── Secrets & Credentials (NEVER commit) ────────────────────────
+**/secrets/
+**/google-services.json
+**/*.jks
+**/*.keystore
+**/*.pem
+**/*.p12
+**/*.key
+
+# ── Android / Gradle ────────────────────────────────────────────
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/*.iml
+android/app/*.iml
+android/captures/
+
+# ── Maven / Spring Boot ─────────────────────────────────────────
+server/target/
+server/.idea/
+server/*.iml
+
+# ── OS / Editor ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+
+# ── Misc ────────────────────────────────────────────────────────
+*.log
+*.tmp

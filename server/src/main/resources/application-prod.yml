@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: sudokusolver
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
+
+server:
+  port: ${PORT:8080}
+
+gemini:
+  api-key: ${sm://gemini-api-key}
+  model: gemini-2.0-flash
+
+logging:
+  level:
+    root: WARN
+    com.antigravity: INFO
+
+# App Check enforced in production
+appcheck:
+  enabled: true

@@ -16,9 +16,10 @@ import java.io.IOException;
  * Initializes the Firebase Admin SDK on server startup.
  *
  * <ul>
- *   <li><b>GCP Cloud Run</b>: Uses Application Default Credentials automatically.</li>
- *   <li><b>Local development</b>: Uses a service account JSON key file
- *       specified via {@code firebase.credentials-path} in application.yml.</li>
+ * <li><b>GCP Cloud Run</b>: Uses Application Default Credentials
+ * automatically.</li>
+ * <li><b>Local development</b>: Uses a service account JSON key file
+ * specified via {@code firebase.credentials-path} in application.yml.</li>
  * </ul>
  */
 @Configuration
@@ -30,13 +31,17 @@ public class FirebaseConfig {
     private String credentialsPath;
 
     @PostConstruct
-    public void initFirebase() throws IOException {
-        if (FirebaseApp.getApps().isEmpty()) {
+    public void initFirebase() {
+        if (!FirebaseApp.getApps().isEmpty()) {
+            return;
+        }
+
+        try {
             FirebaseOptions options;
 
             if (credentialsPath != null && !credentialsPath.isBlank()) {
-                // Local dev: load from service account key file
-                log.info("Initializing Firebase from credentials file: {}", credentialsPath);
+                // Local dev with explicit key file
+                log.info("Initializing Firebase from credentials file");
                 try (FileInputStream serviceAccount = new FileInputStream(credentialsPath)) {
                     options = FirebaseOptions.builder()
                             .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -52,6 +57,9 @@ public class FirebaseConfig {
 
             FirebaseApp.initializeApp(options);
             log.info("Firebase Admin SDK initialized successfully");
+        } catch (Exception e) {
+            log.warn("Firebase init skipped — no credentials available ({}). "
+                    + "App Check verification will not work.", e.getMessage());
         }
     }
 }

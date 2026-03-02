@@ -5,11 +5,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-  autoconfigure:
-    exclude:
-      - com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration
-      - com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerAutoConfiguration
-      - com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration
   cloud:
     gcp:
       secretmanager:
@@ -30,3 +25,14 @@ appcheck:
 # Set this to the absolute path of your downloaded JSON key file
 firebase:
   credentials-path: ${FIREBASE_CREDENTIALS_PATH:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "default"
+  autoconfigure:
+    exclude:
+      - com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.secretmanager.SecretManagerAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration

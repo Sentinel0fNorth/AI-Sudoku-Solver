@@ -15,7 +15,7 @@ server:
 
 gemini:
   api-key: ${GEMINI_API_KEY:your-api-key-here}
-  model: gemini-3-flash
+  model: gemini-3-flash-preview
 
 # App Check disabled for local dev (no token verification)
 appcheck:

@@ -19,6 +19,11 @@ gemini:
   api-key: ${sm://gemini-api-key}
   model: gemini-3-flash-preview
 
+# API Key for mobile client authentication (from Secret Manager)
+sudoku:
+  mobile:
+    api-key: ${sm://mobile-api-key}
+
 logging:
   level:
     root: WARN

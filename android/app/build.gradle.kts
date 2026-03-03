@@ -20,8 +20,17 @@ android {
             useSupportLibrary = true
         }
 
+        // Load local.properties for API Keys
+        val properties = java.util.Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val mobileApiKey = properties.getProperty("MOBILE_API_KEY") ?: "missing_key"
+
         // Default backend URL (emulator localhost)
         buildConfigField("String", "BACKEND_URL", "\"http://10.0.2.2:8080/\"")
+        buildConfigField("String", "MOBILE_API_KEY", "\"$mobileApiKey\"")
     }
 
     buildTypes {

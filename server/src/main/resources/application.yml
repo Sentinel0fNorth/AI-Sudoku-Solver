@@ -17,6 +17,11 @@ gemini:
   api-key: ${GEMINI_API_KEY:your-api-key-here}
   model: gemini-3-flash-preview
 
+# API Key for mobile client authentication (local dev)
+sudoku:
+  mobile:
+    api-key: ${MOBILE_API_KEY:dev-key-not-set}
+
 # App Check disabled for local dev (no token verification)
 appcheck:
   enabled: false

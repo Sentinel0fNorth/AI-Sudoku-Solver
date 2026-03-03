@@ -32,9 +32,16 @@ object RetrofitClient {
     }
 
     /**
-     * OkHttp interceptor that attaches a Firebase App Check token
-     * to every outgoing request as the `X-Firebase-AppCheck` header.
+     * OkHttp interceptor that attaches the static API key
+     * as the `X-Sudoku-Client-Secret` header on every request.
      */
+    private val apiKeyInterceptor = Interceptor { chain ->
+        val request = chain.request().newBuilder()
+            .addHeader("X-Sudoku-Client-Secret", BuildConfig.MOBILE_API_KEY)
+            .build()
+        chain.proceed(request)
+    }
+
     private val appCheckInterceptor = Interceptor { chain ->
         val tokenResult = runBlocking {
             try {
@@ -52,6 +59,7 @@ object RetrofitClient {
     }
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(apiKeyInterceptor)
         .addInterceptor(appCheckInterceptor)
         .addInterceptor(loggingInterceptor)
         .connectTimeout(30, TimeUnit.SECONDS)

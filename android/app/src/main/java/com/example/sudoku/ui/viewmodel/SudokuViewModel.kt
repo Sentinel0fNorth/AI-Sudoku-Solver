@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.sudoku.data.NetworkMonitor
 import com.example.sudoku.data.api.RetrofitClient
 import com.example.sudoku.data.repository.SudokuRepository
-import com.example.sudoku.domain.LocalSudokuSolver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

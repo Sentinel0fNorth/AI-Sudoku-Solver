@@ -22,14 +22,6 @@ sudoku:
   mobile:
     api-key: ${MOBILE_API_KEY:dev-key-not-set}
 
-# App Check disabled for local dev (no token verification)
-appcheck:
-  enabled: false
-
-# Path to Firebase service account key (local dev only)
-# Set this to the absolute path of your downloaded JSON key file
-firebase:
-  credentials-path: ${FIREBASE_CREDENTIALS_PATH:}
 
 ---
 spring:

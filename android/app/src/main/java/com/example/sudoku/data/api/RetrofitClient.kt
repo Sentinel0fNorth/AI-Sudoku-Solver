@@ -1,13 +1,8 @@
 package com.example.sudoku.data.api
 
 import com.example.sudoku.BuildConfig
-import com.google.firebase.Firebase
-import com.google.firebase.appcheck.appCheck
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,8 +15,8 @@ import java.util.concurrent.TimeUnit
  * - Debug: emulator localhost (http://10.0.2.2:8080/)
  * - Release: Cloud Run production URL
  *
- * Every request includes an `X-Firebase-AppCheck` header with a fresh
- * App Check token so the backend can verify request authenticity.
+ * Every request includes an `X-Sudoku-Client-Secret` header with the
+ * static API key so the backend can verify request authenticity.
  */
 object RetrofitClient {
 
@@ -42,25 +37,8 @@ object RetrofitClient {
         chain.proceed(request)
     }
 
-    private val appCheckInterceptor = Interceptor { chain ->
-        val tokenResult = runBlocking {
-            try {
-                Firebase.appCheck.getAppCheckToken(false).await()
-            } catch (e: Exception) {
-                null
-            }
-        }
-
-        val requestBuilder = chain.request().newBuilder()
-        tokenResult?.token?.let { token ->
-            requestBuilder.addHeader("X-Firebase-AppCheck", token)
-        }
-        chain.proceed(requestBuilder.build())
-    }
-
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(apiKeyInterceptor)
-        .addInterceptor(appCheckInterceptor)
         .addInterceptor(loggingInterceptor)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)

@@ -29,6 +29,3 @@ logging:
     root: WARN
     com.antigravity: INFO
 
-# App Check enforced in production
-appcheck:
-  enabled: false

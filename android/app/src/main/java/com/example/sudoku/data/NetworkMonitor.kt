@@ -59,7 +59,7 @@ class NetworkMonitor(context: Context) {
 
         connectivityManager.registerNetworkCallback(request, callback)
 
-        // Unregister when the flow collector is cancelled
+        // Unregister when the flow collector is canceled
         awaitClose {
             connectivityManager.unregisterNetworkCallback(callback)
         }

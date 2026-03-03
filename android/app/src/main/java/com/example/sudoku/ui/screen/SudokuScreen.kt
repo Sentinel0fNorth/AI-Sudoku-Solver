@@ -462,11 +462,11 @@ private fun cornerShapeForCell(
     col: Int,
     radius: androidx.compose.ui.unit.Dp
 ): androidx.compose.ui.graphics.Shape {
-    return when {
-        row == 0 && col == 0 -> RoundedCornerShape(topStart = radius)
-        row == 0 && col == 8 -> RoundedCornerShape(topEnd = radius)
-        row == 8 && col == 0 -> RoundedCornerShape(bottomStart = radius)
-        row == 8 && col == 8 -> RoundedCornerShape(bottomEnd = radius)
+    return when (row) {
+        0 if col == 0 -> RoundedCornerShape(topStart = radius)
+        0 if col == 8 -> RoundedCornerShape(topEnd = radius)
+        8 if col == 0 -> RoundedCornerShape(bottomStart = radius)
+        8 if col == 8 -> RoundedCornerShape(bottomEnd = radius)
         else -> RoundedCornerShape(0.dp)
     }
 }

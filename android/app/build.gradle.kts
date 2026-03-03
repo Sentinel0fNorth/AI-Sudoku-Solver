@@ -36,16 +36,26 @@ android {
         buildConfigField("String", "MOBILE_API_KEY", "\"$mobileApiKey\"")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("app/release.jks")
+            storePassword = localProps.getProperty("KEYSTORE_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
+            keyAlias = localProps.getProperty("KEY_ALIAS") ?: System.getenv("KEY_ALIAS") ?: ""
+            keyPassword = localProps.getProperty("KEY_PASSWORD") ?: System.getenv("KEY_PASSWORD") ?: ""
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             // Production Cloud Run URL
             buildConfigField("String", "BACKEND_URL", "\"https://sudokusolver-647531837418.asia-south1.run.app/\"")
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

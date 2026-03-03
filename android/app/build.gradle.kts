@@ -84,6 +84,7 @@ dependencies {
 
     // ── Core & Lifecycle ────────────────────────────────────────────────
     implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
@@ -100,8 +101,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
-    // ── Material (DynamicColors for Samsung OEM fix) ────────────────────
-    implementation("com.google.android.material:material:1.13.0")
 
     // ── Testing ─────────────────────────────────────────────────────────
     testImplementation("junit:junit:4.13.2")

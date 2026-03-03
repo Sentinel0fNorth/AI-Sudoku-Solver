@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Squircle Background -->
+    <path
+        android:fillColor="#3B7EFA"
+        android:pathData="M 34,16 h 40 c 10,0 18,8 18,18 v 40 c 0,10 -8,18 -18,18 h -40 c -10,0 -18,-8 -18,-18 v -40 c 0,-10 8,-18 18,-18 z" />
+
+    <group
+        android:scaleX="0.75"
+        android:scaleY="0.75"
+        android:pivotX="54"
+        android:pivotY="54">
+        
+        <!-- Camera Body -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M 26,42 L 34,34 L 48,34 L 56,42 L 70,42 C 74.4,42 78,45.6 78,50 L 78,72 C 78,76.4 74.4,80 70,80 L 26,80 C 21.6,80 18,76.4 18,72 L 18,50 C 18,45.6 21.6,42 26,42 Z" />
+
+        <!-- Button on top -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M 26,38 h 6 v 4 h -6 z" />
+
+        <!-- Grid -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M 64,22 h 7 v 7 h -7 z M 73,22 h 7 v 7 h -7 z M 82,22 h 7 v 7 h -7 z M 64,31 h 7 v 7 h -7 z M 73,31 h 7 v 7 h -7 z M 82,31 h 7 v 7 h -7 z M 64,40 h 7 v 7 h -7 z M 73,40 h 7 v 7 h -7 z M 82,40 h 7 v 7 h -7 z" />
+
+        <!-- Outer Lens Cutout (Background Blue) -->
+        <path
+            android:fillColor="#3B7EFA"
+            android:pathData="M 48,47 A 14,14 0 1,1 48,75 A 14,14 0 1,1 48,47 Z" />
+
+        <!-- Inner Lens (White) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M 48,51 A 10,10 0 1,1 48,71 A 10,10 0 1,1 48,51 Z" />
+    </group>
+</vector>

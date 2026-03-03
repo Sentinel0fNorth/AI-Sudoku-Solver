@@ -22,9 +22,12 @@ import com.example.sudoku.ui.theme.SudokuSolverTheme
 import com.example.sudoku.ui.viewmodel.SudokuViewModel
 import java.io.File
 
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 

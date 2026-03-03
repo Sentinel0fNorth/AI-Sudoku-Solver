@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -21,15 +23,13 @@ android {
         }
 
         // API Key fallback: System env (CI/CD) → local.properties (dev) → default
+        val localProps = Properties()
+        val localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            localProps.load(localPropsFile.inputStream())
+        }
         val mobileApiKey: String = System.getenv("MOBILE_API_KEY")
-            ?: run {
-                val propsFile = rootProject.file("local.properties")
-                if (propsFile.exists()) {
-                    val props = java.util.Properties()
-                    props.load(propsFile.inputStream())
-                    props.getProperty("MOBILE_API_KEY")
-                } else null
-            }
+            ?: localProps.getProperty("MOBILE_API_KEY")
             ?: "missing_key"
 
         // Default backend URL (emulator localhost)

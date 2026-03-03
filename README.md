@@ -14,9 +14,20 @@ A full-stack mobile application that allows users to seamlessly solve Sudoku puz
 
 ## Architecture Overview
 
+>[!NOTE]
+> *Placeholder: Insert an Architecture Diagram (e.g., Mermaid) or data flow illustration here showing the connection between the Android Client, the Secure API layer, and the Spring Boot Backend.*
+
 The project is split into two primary components:
 1. **Android Client (`/android`)**: A native mobile application built using Kotlin and Jetpack Compose.
 2. **Server Backend (`/server`)**: A Java Spring Boot application that handles the core Sudoku solving algorithm and exposes a secure REST API.
+
+## Screenshots
+
+>[!NOTE]
+> *Placeholder: Insert Application Screenshots / GIFs here.*
+> - *Screenshot 1: The Splash Screen and Custom App Icon.*
+> - *Screenshot 2: The Camera/Gallery Grid Extraction feature.*
+> - *GIF: The app instantly solving a Sudoku puzzle.*
 
 ## Features
 
@@ -62,12 +73,31 @@ You must also create the following secrets in your GCP project's Secret Manager:
 
 1. Open the `android/` directory in Android Studio.
 2. Create a file named `local.properties` in the root of the `android` project directory (this file should be ignored by Git).
-3. Add your backend API key to `local.properties` to allow local builds to authenticate:
+3. Add your backend API key to `local.properties` to allow local builds to authenticate. If you plan to build the **Release APK**, you must also provide your Keystore signing configurations, as they are dynamically read by Gradle to protect the raw passwords:
    ```properties
    MOBILE_API_KEY=your_actual_api_key_here
+   KEYSTORE_PASSWORD=your_keystore_password
+   KEY_ALIAS=my-key-alias
+   KEY_PASSWORD=your_key_password
    ```
 4. Sync the Gradle project.
 5. Build and run the app on an emulator or physical device.
+
+## Deployment (Google Cloud Run)
+
+The Spring Boot backend is designed for serverless deployment on Google Cloud Run. This architecture ensures the backend scales automatically and securely without maintaining dedicated VMs.
+
+To deploy the backend:
+1. Ensure your `$SPRING_CLOUD_GCP_SECRETMANAGER_PROJECT_ID` is properly set in your environment.
+2. Build the container image using Google Jib or Docker:
+   ```bash
+   mvn compile jib:build -Dimage=gcr.io/your-project-id/sudokusolver
+   ```
+3. Deploy the resulting image to Cloud Run using the `prod` Spring profile:
+   ```bash
+   gcloud run deploy sudokusolver --image gcr.io/your-project-id/sudokusolver --platform managed --set-env-vars="SPRING_PROFILES_ACTIVE=prod"
+   ```
+4. Update the `BACKEND_URL` in `android/app/build.gradle.kts` to point to the newly generated Cloud Run public service URL.
 
 ## Tests
 

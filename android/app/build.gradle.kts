@@ -20,13 +20,17 @@ android {
             useSupportLibrary = true
         }
 
-        // Load local.properties for API Keys
-        val properties = java.util.Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            properties.load(localPropertiesFile.inputStream())
-        }
-        val mobileApiKey = properties.getProperty("MOBILE_API_KEY") ?: "missing_key"
+        // API Key fallback: System env (CI/CD) → local.properties (dev) → default
+        val mobileApiKey: String = System.getenv("MOBILE_API_KEY")
+            ?: run {
+                val propsFile = rootProject.file("local.properties")
+                if (propsFile.exists()) {
+                    val props = java.util.Properties()
+                    props.load(propsFile.inputStream())
+                    props.getProperty("MOBILE_API_KEY")
+                } else null
+            }
+            ?: "missing_key"
 
         // Default backend URL (emulator localhost)
         buildConfigField("String", "BACKEND_URL", "\"http://10.0.2.2:8080/\"")
@@ -98,7 +102,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     // ── Material (DynamicColors for Samsung OEM fix) ────────────────────
-    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.13.0")
 
     // ── Testing ─────────────────────────────────────────────────────────
     testImplementation("junit:junit:4.13.2")

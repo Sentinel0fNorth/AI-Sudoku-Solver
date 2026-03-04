@@ -10,6 +10,7 @@ A full-stack mobile application that allows users to seamlessly solve Sudoku puz
     - [Prerequisites](#prerequisites)
     - [Backend (Spring Boot) Setup](#backend-spring-boot-setup)
     - [Android App Setup](#android-app-setup)
+   - [Deployment (Google Cloud Run)](#deployment-google-cloud-run)
 - [License](#license)
 
 ## Architecture Overview
@@ -82,8 +83,6 @@ You must also create the following secrets in your GCP project's Secret Manager:
    ```
 4. Sync the Gradle project.
 5. Build and run the app on an emulator or physical device.
-
-## Deployment (Google Cloud Run)
 
 ## Deployment (Google Cloud Run)
 

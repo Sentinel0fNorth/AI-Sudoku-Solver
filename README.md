@@ -85,19 +85,30 @@ You must also create the following secrets in your GCP project's Secret Manager:
 
 ## Deployment (Google Cloud Run)
 
-The Spring Boot backend is designed for serverless deployment on Google Cloud Run. This architecture ensures the backend scales automatically and securely without maintaining dedicated VMs.
+## Deployment (Google Cloud Run)
 
-To deploy the backend:
-1. Ensure your `$SPRING_CLOUD_GCP_SECRETMANAGER_PROJECT_ID` is properly set in your environment.
-2. Build the container image using Google Jib or Docker:
+The Spring Boot backend is designed for serverless deployment on Google Cloud Run. If you wish to host your own instance of the backend, follow these steps:
+
+1. **Create a GCP Project**: Set up a new project in the [Google Cloud Console](https://console.cloud.google.com/) and enable the **Cloud Run API** and **Secret Manager API**.
+2. **Configure Secrets**: In Secret Manager, create `gemini-api-key` and `sudoku-mobile-api-key` (as detailed in the [GCP Secret Manager](#backend-spring-boot-setup) section).
+3. **Grant Permissions**: Ensure the Default Compute Service Account (which Cloud Run uses) has the `Secret Manager Secret Accessor` IAM role.
+4. **Export Environment Variable**: Locally, set your project ID:
    ```bash
-   mvn compile jib:build -Dimage=gcr.io/your-project-id/sudokusolver
+   export SPRING_CLOUD_GCP_SECRETMANAGER_PROJECT_ID="your-gcp-project-id"
    ```
-3. Deploy the resulting image to Cloud Run using the `prod` Spring profile:
+5. **Build and Push the Image**: Use Google Jib to build the container image and push it to the Google Container Registry (GCR):
    ```bash
-   gcloud run deploy sudokusolver --image gcr.io/your-project-id/sudokusolver --platform managed --set-env-vars="SPRING_PROFILES_ACTIVE=prod"
+   mvn compile jib:build -Dimage=gcr.io/your-gcp-project-id/sudokusolver
    ```
-4. Update the `BACKEND_URL` in `android/app/build.gradle.kts` to point to the newly generated Cloud Run public service URL.
+6. **Deploy to Cloud Run**: Deploy the image using the `prod` Spring profile:
+   ```bash
+   gcloud run deploy sudokusolver \
+     --image gcr.io/your-gcp-project-id/sudokusolver \
+     --platform managed \
+     --allow-unauthenticated \
+     --set-env-vars="SPRING_PROFILES_ACTIVE=prod"
+   ```
+7. **Update Android Client**: Once deployed, the console will output a public Service URL (e.g., `https://sudokusolver...run.app/`). Copy this URL and update the `BACKEND_URL` in your `android/app/build.gradle.kts` file.
 
 ## Tests
 

@@ -16,20 +16,20 @@ This project implements a Hybrid Intelligence architecture. It prioritizes Cloud
 
 ```mermaid
 graph TD
-    subgraph "Android Client (Jetpack Compose)"
+    subgraph "Android Client"
         UI[UI Layer] --> VM[ViewModel]
         VM --> Repo[SudokuRepository]
         Repo -->|Offline| LocalSolver[Local Backtracking Engine]
         Repo -->|Online| Retrofit[Retrofit Client]
     end
 
-    subgraph "Google Cloud Platform (Serverless)"
-        Retrofit -->|HTTPS / POST (Image)| CloudRun[Cloud Run Service]
+    subgraph "Google Cloud Platform"
+        Retrofit -->|HTTPS POST Image| CloudRun[Cloud Run Service]
         SecretMgr[GCP Secret Manager] -.->|Loaded at Startup| Controller
         CloudRun --> Filter[API Key Filter & Rate Limiter]
         Filter --> Controller[Spring Boot Controller]
         Controller -->|Passes Image| Service[Solver Service]
-        Service -->|OCR Request (Image)| Gemini[Gemini 3 Flash Preview]
+        Service -->|OCR Request Image| Gemini[Gemini 3 Flash Preview]
         Gemini -->|Returns Extracted Grid| Service
     end
 

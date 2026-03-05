@@ -331,7 +331,7 @@ private fun SudokuGrid(
                 .aspectRatio(1f),
             shape = RoundedCornerShape(32.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
-            shadowElevation = 12.dp,
+            shadowElevation = 12.dp, // Adds depth effect so the grid looks floating
             tonalElevation = 2.dp
         ) {
             Column(
@@ -364,6 +364,7 @@ private fun SudokuGrid(
                                                 isSelected = selectedCell == Pair(i, j),
                                                 isConflict = Pair(i, j) in conflictCells,
                                                 isOriginal = Pair(i, j) in originalCells,
+                                                // Prevent click interactions while the background shimmer (scanning) is active
                                                 onClick = { if (!isScanning) onCellSelected(i, j) },
                                                 modifier = Modifier.weight(1f)
                                             )

@@ -113,6 +113,13 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
+    // ── CameraX ─────────────────────────────────────────────────────────
+    val cameraxVersion = "1.5.3"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+
 
     // ── Testing ─────────────────────────────────────────────────────────
     testImplementation("junit:junit:4.13.2")

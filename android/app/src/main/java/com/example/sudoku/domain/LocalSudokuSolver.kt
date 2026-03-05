@@ -41,7 +41,7 @@ object LocalSudokuSolver {
                     val boxIndex = (i / 3) * 3 + (j / 3)
 
                     // Reject characters outside '1'-'9'
-                    if (num < 0 || num > 8) return false
+                    if (num !in 0..8) return false
 
                     if (row[i][num] || col[j][num] || box[boxIndex][num]) return false
 

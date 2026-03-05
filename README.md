@@ -3,6 +3,10 @@
 
 A production-grade mobile application that allows users to seamlessly solve Sudoku puzzles using a native Android app backed by a secure Spring Boot microservice. This project demonstrates modern Android development (Jetpack Compose, CameraX) combined with Cloud-Native DevOps practices (Docker, Cloud Run, Secret Manager).
 
+<img width="1920" height="1440" alt="229shots_so" src="https://github.com/user-attachments/assets/4162916e-2c46-4588-90d2-5fa504e780cd" />
+
+<img width="1920" height="1440" alt="103shots_so" src="https://github.com/user-attachments/assets/a4d18a47-951a-492c-baa8-d46a05c20d00" />
+
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
 - [Features](#features)

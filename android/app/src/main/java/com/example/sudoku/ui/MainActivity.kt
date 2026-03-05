@@ -20,6 +20,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudoku.ui.screen.SudokuScreen
 import com.example.sudoku.ui.theme.SudokuSolverTheme
 import com.example.sudoku.ui.viewmodel.SudokuViewModel
+import com.example.sudoku.ui.viewmodel.SudokuUiState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import java.io.File
 
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -105,6 +108,35 @@ class MainActivity : ComponentActivity() {
             this,
             "${applicationContext.packageName}.fileprovider",
             tempFile
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "id:pixel_9")
+@Composable
+fun SudokuScreenPreview() {
+    val sampleGrid = List(9) { row ->
+        List(9) { col ->
+            if (row == 0 && col == 0) '5'
+            else if (row == 1 && col == 1) '3'
+            else if (row == 8 && col == 8) '9'
+            else ' '
+        }
+    }
+    SudokuSolverTheme(dynamicColor = false) {
+        SudokuScreen(
+            uiState = SudokuUiState(
+                grid = sampleGrid,
+                originalCells = setOf(Pair(0, 0), Pair(1, 1), Pair(8, 8))
+            ),
+            onCellSelected = { _, _ -> },
+            onKeypadInput = {},
+            onDeleteInput = {},
+            onSolveClicked = {},
+            onClearGrid = {},
+            onToggleTheme = {},
+            onCameraClick = {},
+            onGalleryClick = {}
         )
     }
 }

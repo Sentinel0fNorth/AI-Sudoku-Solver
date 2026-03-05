@@ -1,116 +1,112 @@
-# Sudoku Solver (Portfolio Project)
+# AI Sudoku Solver
+### Native Android OCR Utility with Spring Boot Microservices
 
-A full-stack mobile application that allows users to seamlessly solve Sudoku puzzles using an Android app with a backend built in Spring Boot. This repository serves as a portfolio project, demonstrating modern Android development practices (Jetpack Compose) combined with a robust, production-ready backend architecture.
+A production-grade mobile application that allows users to seamlessly solve Sudoku puzzles using a native Android app backed by a secure Spring Boot microservice. This project demonstrates modern Android development (Jetpack Compose, CameraX) combined with Cloud-Native DevOps practices (Docker, Cloud Run, Secret Manager).
 
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
 - [Features](#features)
-- [Security implementation](#security-implementation)
+- [Security & DevOps](#security--devops)
 - [Project Setup](#project-setup)
-    - [Prerequisites](#prerequisites)
-    - [Backend (Spring Boot) Setup](#backend-spring-boot-setup)
-    - [Android App Setup](#android-app-setup)
-   - [Deployment (Google Cloud Run)](#deployment-google-cloud-run)
+- [Deployment (Google Cloud Run)](#deployment-google-cloud-run)
 - [License](#license)
 
 ## Architecture Overview
+This project implements a Hybrid Intelligence architecture. It prioritizes Cloud AI for perception (OCR) but maintains a robust offline fallback for logic (solving), ensuring 100% availability.
 
->[!NOTE]
-> *Placeholder: Insert an Architecture Diagram (e.g., Mermaid) or data flow illustration here showing the connection between the Android Client, the Secure API layer, and the Spring Boot Backend.*
+```mermaid
+graph TD
+    subgraph "Android Client (Jetpack Compose)"
+        UI[UI Layer] --> VM[ViewModel]
+        VM --> Repo[SudokuRepository]
+        Repo -->|Offline| LocalSolver[Local Backtracking Engine]
+        Repo -->|Online| Retrofit[Retrofit Client]
+    end
 
-The project is split into two primary components:
-1. **Android Client (`/android`)**: A native mobile application built using Kotlin and Jetpack Compose.
-2. **Server Backend (`/server`)**: A Java Spring Boot application that handles the core Sudoku solving algorithm and exposes a secure REST API.
+    subgraph "Google Cloud Platform (Serverless)"
+        Retrofit -->|HTTPS / POST| CloudRun[Cloud Run Service]
+        SecretMgr[GCP Secret Manager] -.->|Loaded at Startup| Controller
+        CloudRun --> Filter[API Key Filter & Rate Limiter]
+        Filter --> Controller[Spring Boot Controller]
+        Controller --> Service[Solver Service]
+        Service -->|OCR Request| Gemini[Gemini 3 Flash Preview]
+    end
 
-## Screenshots
+    LocalSolver -.->|Fallback Result| VM
+    Service -.->|Solved Grid| VM
+```
 
->[!NOTE]
-> *Placeholder: Insert Application Screenshots / GIFs here.*
-> - *Screenshot 1: The Splash Screen and Custom App Icon.*
-> - *Screenshot 2: The Camera/Gallery Grid Extraction feature.*
-> - *GIF: The app instantly solving a Sudoku puzzle.*
+The system is split into two primary components:
+
+- **Android Client (`/android`)**: A native Kotlin application built with Jetpack Compose and Material You. It handles image capture, UI state, and local validation.
+- **Server Backend (`/server`)**: A Spring Boot microservice containerized with Jib. It handles the AI integration (Gemini), Rate Limiting, and serves as the secure gateway.
 
 ## Features
+- **Jetpack Compose UI**: Modern, declarative UI with Material You dynamic theming that adapts to the user's wallpaper.
+- **AI Grid Extraction**: Integrates with the Gemini 3 Flash Preview API to visually recognize and extract Sudoku grids from camera photos in milliseconds.
+- **Offline-First Architecture**: Features a local Backtracking + MRV Heuristic engine. If the cloud is unreachable, the app automatically switches to local solving without user interruption.
+- **Smart Validation**: Real-time conflict detection (highlighting duplicates in rows/cols) before the user even hits "Solve."
 
-- **Jetpack Compose UI**: Modern, declarative UI on Android.
-- **Material You Dynamic Theming**: Adaptive color schemes that respect device settings.
-- **AI Grid Extraction**: Integrates with the Gemini API to automatically extract Sudoku grids from device camera photos.
-- **Offline Manual Fallback**: Includes a local Sudoku solving algorithm on the Android client for use when the device is fully offline.
-- **Fast Solving Algorithm**: A custom backtracking algorithm optimized for performance in the backend.
-- **Secure API Access**: Custom API key filtering and rate limiting to prevent abuse.
+## Security & DevOps
+This project moves beyond basic app development by implementing Enterprise-grade security and DevOps patterns:
 
-## Security implementation
-
-This project features a resume-optimized security architecture demonstrating practical and robust security paradigms:
-
-- **API Key Filtering**: Incoming requests to the backend are intercepted by a custom `ApiKeyFilter` to ensure a valid API key is present.
-- **GCP Secret Manager Integration**: Production API keys are securely stored and retrieved using Google Cloud Platform Secret Manager, eliminating hardcoded secrets in the backend repository.
-- **Rate Limiting**: An in-memory token bucket rate limiter protects the API from DDoS attacks and potential scraping, maintaining high availability.
-- **Client-Side Obfuscation**: The Android app utilizes R8 minification to obfuscate code and protect the API key from trivial decompilation during distribution.
+- **Zero Trust Secrets**: API keys are never hardcoded. The backend dynamically fetches the `GEMINI_API_KEY` from GCP Secret Manager at runtime using the Principle of Least Privilege.
+- **Resilience & Throttling**: An in-memory Token Bucket Rate Limiter protects the API from abuse/DDoS, ensuring the free tier quota is never exceeded.
+- **Containerization**: The backend is built into an optimized Docker image using Google Jib (distroless), removing the need for a Dockerfile and reducing the attack surface.
+- **Serverless Autoscaling**: Deployed to Google Cloud Run, allowing the backend to scale to zero (costing $0.00) when idle and automatically spinning up during traffic spikes.
 
 ## Project Setup
 
 ### Prerequisites
-
-- [Java JDK 21+](https://www.oracle.com/java/technologies/downloads/#java21)
-- [Android Studio](https://developer.android.com/studio)
-- A Google Cloud Platform (GCP) account (for deploying/testing production secrets).
+- Java JDK 25+ (for Backend) / Java JDK 21 (for Android)
+- Android Studio Ladybug+
+- A Google Cloud Platform Project (for Secret Manager).
 
 ### Backend (Spring Boot) Setup
+1. Navigate to `server/` and open in IntelliJ IDEA.
+2. Set up your local environment variables in `application-dev.yml` or via your IDE run configuration.
+3. Run: `mvn spring-boot:run`
 
-1. Navigate to the `server/` directory.
-2. Open the project in IntelliJ IDEA or your preferred IDE.
-3. Configure your local application properties (e.g., `application-dev.yml`) depending on the environment you are running.
-4. Run the project using `mvn spring-boot:run` (or your IDE's run configuration).
-
-**GCP Secret Manager for Production:**
-If deploying with the `prod` profile, ensure your GCP project is properly configured and the `SPRING_CLOUD_GCP_SECRETMANAGER_PROJECT_ID` environment variable is set.
-The service account running your backend must be granted the **Secret Manager Secret Accessor** (`roles/secretmanager.secretAccessor`) IAM role to read these values. 
-You must also create the following secrets in your GCP project's Secret Manager:
-- `gemini-api-key`: Your actual Gemini API key for AI grid extraction.
-- `sudoku-mobile-api-key`: The secure key that matches the `MOBILE_API_KEY` expected from the Android client.
+**GCP Secret Manager (Production Profile):**
+To run with the `prod` profile, your environment must have access to GCP.
+1. Create secrets in GCP Secret Manager: `gemini-api-key` and `mobile-api-key`.
+2. Ensure your Service Account has the role `roles/secretmanager.secretAccessor`.
 
 ### Android App Setup
+1. Open `android/` in Android Studio.
+2. Create a `local.properties` file in the root `android/` folder (ignored by Git):
 
-1. Open the `android/` directory in Android Studio.
-2. Create a file named `local.properties` in the root of the `android` project directory (this file should be ignored by Git).
-3. Add your backend API key to `local.properties` to allow local builds to authenticate. If you plan to build the **Release APK**, you must also provide your Keystore signing configurations, as they are dynamically read by Gradle to protect the raw passwords:
-   ```properties
-   MOBILE_API_KEY=your_actual_api_key_here
-   KEYSTORE_PASSWORD=your_keystore_password
-   KEY_ALIAS=my-key-alias
-   KEY_PASSWORD=your_key_password
-   ```
-4. Sync the Gradle project.
-5. Build and run the app on an emulator or physical device.
+```properties
+# Your Backend API Key (matches the server's expected key)
+MOBILE_API_KEY=your_secure_random_key_here
+# Backend URL (Localhost for emulator or your Cloud Run URL)
+BACKEND_URL=http://10.0.2.2:8080/
+```
+3. Sync Gradle and run on an Emulator (Pixel 6+ recommended).
 
 ## Deployment (Google Cloud Run)
+The backend is designed for a single-command deploy flow:
 
-The Spring Boot backend is designed for serverless deployment on Google Cloud Run. If you wish to host your own instance of the backend, follow these steps:
+1. **Configure GCP:**
+```bash
+export GOOGLE_CLOUD_PROJECT="your-project-id"
+```
 
-1. **Create a GCP Project**: Set up a new project in the [Google Cloud Console](https://console.cloud.google.com/) and enable the **Cloud Run API** and **Secret Manager API**.
-2. **Configure Secrets**: In Secret Manager, create `gemini-api-key` and `sudoku-mobile-api-key` (as detailed in the [GCP Secret Manager](#backend-spring-boot-setup) section).
-3. **Grant Permissions**: Ensure the Default Compute Service Account (which Cloud Run uses) has the `Secret Manager Secret Accessor` IAM role.
-4. **Export Environment Variable**: Locally, set your project ID:
-   ```bash
-   export SPRING_CLOUD_GCP_SECRETMANAGER_PROJECT_ID="your-gcp-project-id"
-   ```
-5. **Build and Push the Image**: Use Google Jib to build the container image and push it to the Google Container Registry (GCR):
-   ```bash
-   mvn compile jib:build -Dimage=gcr.io/your-gcp-project-id/sudokusolver
-   ```
-6. **Deploy to Cloud Run**: Deploy the image using the `prod` Spring profile:
-   ```bash
-   gcloud run deploy sudokusolver \
-     --image gcr.io/your-gcp-project-id/sudokusolver \
-     --platform managed \
-     --allow-unauthenticated \
-     --set-env-vars="SPRING_PROFILES_ACTIVE=prod"
-   ```
-7. **Update Android Client**: Once deployed, the console will output a public Service URL (e.g., `https://sudokusolver...run.app/`). Copy this URL and update the `BACKEND_URL` in your `android/app/build.gradle.kts` file.
+2. **Build & Push Container:**
+```bash
+mvn compile jib:build -Dimage=gcr.io/$GOOGLE_CLOUD_PROJECT/sudokusolver
+```
+
+3. **Deploy Service:**
+```bash
+gcloud run deploy sudokusolver \
+  --image gcr.io/$GOOGLE_CLOUD_PROJECT/sudokusolver \
+  --platform managed \
+  --allow-unauthenticated \
+  --region asia-south1
+```
 
 ## Tests
-
 To ensure the algorithmic integrity of the application, unit tests are provided for both the Spring Boot backend and the Android client.
 
 ### Backend Tests (Spring Boot)
@@ -120,13 +116,12 @@ They cover:
 - `testSolveUnsolvableGrid`: Ensures that an `IllegalArgumentException` is thrown when an unsolvable grid (e.g., with inherent constraint violations like two 5s in the same row) is submitted.
 
 ### Frontend Tests (Android)
-The tests are located in `android/app/src/test/java/.../LocalSudokuSolverTest.kt` and can be run via Android Studio or `./gradlew testDebugUnitTest`.
+The tests are located in `android/app/src/test/java/.../domain/LocalSudokuSolverTest.kt` and can be run via Android Studio or `./gradlew testDebugUnitTest`.
 They cover:
-- `testIsValid_validGrid`: Verifies the structural validation logic correctly accepts a valid grid.
-- `testIsValid_invalidGridWithDuplicateInRow`: Ensures grid validation properly catches row/column/box rule violations.
-- `testSolve_validGrid`: Validates the offline fallback solving algorithm correctly solves a puzzle locally.
-- `testSolve_invalidGrid`: Ensures that submitting an invalid grid to the local solver correctly throws an `InvalidGridException`.
+- `testIsValid_validGrid_returnsTrue`: Verifies the structural validation logic correctly accepts a valid grid.
+- `testIsValid_invalidGridWithDuplicateInRow_returnsFalse`: Ensures grid validation properly catches row/column/box rule violations.
+- `testSolve_validGrid_returnsSolvedGrid`: Validates the offline fallback solving algorithm correctly solves a puzzle locally.
+- `testSolve_invalidGrid_throwsException`: Ensures that submitting an invalid grid to the local solver correctly throws an exception.
 
 ## License
-
 [MIT License](LICENSE)

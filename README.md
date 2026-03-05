@@ -24,12 +24,13 @@ graph TD
     end
 
     subgraph "Google Cloud Platform (Serverless)"
-        Retrofit -->|HTTPS / POST| CloudRun[Cloud Run Service]
+        Retrofit -->|HTTPS / POST (Image)| CloudRun[Cloud Run Service]
         SecretMgr[GCP Secret Manager] -.->|Loaded at Startup| Controller
         CloudRun --> Filter[API Key Filter & Rate Limiter]
         Filter --> Controller[Spring Boot Controller]
-        Controller --> Service[Solver Service]
-        Service -->|OCR Request| Gemini[Gemini 3 Flash Preview]
+        Controller -->|Passes Image| Service[Solver Service]
+        Service -->|OCR Request (Image)| Gemini[Gemini 3 Flash Preview]
+        Gemini -->|Returns Extracted Grid| Service
     end
 
     LocalSolver -.->|Fallback Result| VM
